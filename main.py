@@ -6,17 +6,6 @@ p=np.random.rand(k)
 bandits = np.array([np.random.binomial(1, p[i], n) for i in range(k)])
 print(f'k-armed bandit: {k=}, {n=}, {p=}')
 
-def explore():
-  def sample():
-    return np.random.choice(range(bandits.shape[0]))
-  a = sample()
-  return a, np.random.choice(bandits[a])
-
-def exploit(q_a):
-  maxes = np.argwhere(q_a == np.amax(q_a)).T[0]
-  a = np.random.choice(maxes)
-  return a, np.random.choice(bandits[a])
-
 def explore_then_exploit(n_explore = 50, n_exploit = 50):
   """
   Explore 10 times, then calculate Q_a and use that to exploit
@@ -24,6 +13,12 @@ def explore_then_exploit(n_explore = 50, n_exploit = 50):
   total_n = n_explore + n_exploit
 
   # Do exploration
+  def explore():
+    """
+    Sample a random bandit to pull.
+    """
+    a = np.random.choice(range(bandits.shape[0]))
+    return a, np.random.choice(bandits[a])
   exploration = np.array([explore() for i in range(n_explore)])
   exploration_reward = exploration.sum(axis=0)[1]
 
@@ -35,6 +30,14 @@ def explore_then_exploit(n_explore = 50, n_exploit = 50):
   q_a = np.divide(sums, lens, out=np.zeros_like(sums), where=lens != 0)
 
   # Exploit the best bandit
+  def exploit(q_a):
+    """
+    Choose argmax from q_a.
+    If there is a tie, choose randomly.
+    """
+    maxes = np.argwhere(q_a == np.amax(q_a)).T[0]
+    a = np.random.choice(maxes)
+    return a, np.random.choice(bandits[a])
   exploitation = np.array([exploit(q_a) for i in range(n_exploit)])
   exploitation_reward = exploitation.sum(axis=0)[1]
 
