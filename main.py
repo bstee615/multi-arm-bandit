@@ -29,7 +29,6 @@ def explore_then_exploit(n_explore = 100, n_exploit = 100):
   sums = np.zeros((bandits.shape[0],))
   lens = np.zeros((bandits.shape[0],))
   for a, r in exploration:
-    # print(a, r)
     sums[a] += r
     lens[a] += 1
   q_a = sums / lens
