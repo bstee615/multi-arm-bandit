@@ -13,10 +13,11 @@ def explore():
   return a, np.random.choice(bandits[a])
 
 def exploit(q_a):
-  a = np.argmax(q_a)
+  maxes = np.argwhere(q_a == np.amax(q_a)).T[0]
+  a = np.random.choice(maxes)
   return a, np.random.choice(bandits[a])
 
-def explore_then_exploit(n_explore = 100, n_exploit = 100):
+def explore_then_exploit(n_explore = 50, n_exploit = 50):
   """
   Explore 10 times, then calculate Q_a and use that to exploit
   """
@@ -31,7 +32,7 @@ def explore_then_exploit(n_explore = 100, n_exploit = 100):
   for a, r in exploration:
     sums[a] += r
     lens[a] += 1
-  q_a = sums / lens
+  q_a = np.divide(sums, lens, out=np.zeros_like(sums), where=lens != 0)
 
   # Exploit the best bandit
   exploitation = np.array([exploit(q_a) for i in range(n_exploit)])
@@ -47,4 +48,4 @@ def explore_then_exploit(n_explore = 100, n_exploit = 100):
   assert all_rewards.shape[0] == total_n
   return all_rewards
 
-explore_then_exploit()
+explore_then_exploit(1, 100)
