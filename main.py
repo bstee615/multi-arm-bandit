@@ -8,7 +8,7 @@ print(f'k-armed bandit: {k=}, {n=}, {p=}')
 
 def explore_then_exploit(n_explore = 50, n_exploit = 50):
   """
-  Explore 10 times, then calculate Q_a and use that to exploit
+  Explore only for some times, then calculate q_a and use that to exploit (an approximation of) the best bandit.
   """
   total_n = n_explore + n_exploit
 
